@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title></title>
+    </head>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.1.js"></script>
+    <script type="text/javascript" src="toaster.jquery.js"></script>
+    <link href="toaster.jquery.css" rel="stylesheet" type="text/css">
+    <script>
+
+        function jt( myPosition , myBase )
+        {
+            $.toaster({
+                base:myBase,
+                position:myPosition,
+                title:'Fehlende Daten',
+                text:'Wichtige Angte &uuml;berpr&uuml;fen Sie Ihre Angaben!',
+                timeout:1000,
+                cssclass:'important'
+            });
+        }
+
+    </script>
+    <body>
+        <div id="previewTable">
+
+        <button onclick="jt('br','body');">TR Body!</button>
+        <button onclick="jt('bl','body');">TL Body!</button>
+        <button onclick="jt('tr','body');">TR Body!</button>
+        <button onclick="jt('tl','body');">TL Body!</button>
+
+        sdfsadf safsafsafa sfsadf asf<br>
+
+        asfd sadf saf dsafsa<br>
+        sdfsadf safsafsafa sfsadf asf<br>
+
+        asfd sadf saf dsafsa<br>
+        sdfsadf safsafsafa sfsadf asf<br>
+
+        asfd sadf saf dsafsa<br>
+        </div>
+    </body>
+</html>
