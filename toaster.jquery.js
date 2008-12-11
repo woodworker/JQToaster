@@ -1,3 +1,14 @@
+/*
+ * JQToaster
+ *
+ * Copyright (c) 2008 Martin Holzhauer (martin.holzhauer.eu)
+ * Dual licensed under the MIT (MIT-LICENSE.txt)
+ * and GPL (GPL-LICENSE.txt) licenses.
+ *
+ * $Date: $
+ * $Rev: $
+ */
+
 jQuery.toasterSetting = {
         timeout: 3000,			// timeout to close the toast
         title: '',				// title of the toast
@@ -9,7 +20,8 @@ jQuery.toasterSetting = {
 		base:'body',			// base of the toaster area
 		closable:false,			// is the toast cloasable
 		onclose:false,			// callback function when the toast cloases: callback(cssIdOfTheToast)
-		oncreate:false			// callback that is called after creation of the toast: callback(cssIdOfTheToast)
+		oncreate:false,			// callback that is called after creation of the toast: callback(cssIdOfTheToast)
+        hideAlgo:'perPosition'  // hide algorythm of toasts perPosition, global or none
     };
 
 if(!Array.indexOf)
@@ -34,11 +46,23 @@ jQuery.toaster = function(settings)
 
     var msgId = 'toast'+Math.floor(Math.random()*1000000);
 
-	this.toasterMsgCounter = this.toasterMsgCounter || new Array();
-    this.toasterMsgCounter[settings.base] = this.toasterMsgCounter[settings.base] || new Array();
-	this.toasterMsgCounter[settings.base][settings.position] = this.toasterMsgCounter[settings.base][settings.position] || new Array();
+    var actualMsgCounter = null;
+    if( settings.hideAlgo=='global' )
+    {
+        this.toasterMsgCounter = this.toasterMsgCounter || new Array();
+        this.toasterMsgCounter.push( msgId );
+        actualMsgCounter = this.toasterMsgCounter;
+    }
+    else if( settings.hideAlgo=='perPosition' )
+    {
+        this.toasterMsgCounter = this.toasterMsgCounter || new Array();
+        this.toasterMsgCounter[settings.base] = this.toasterMsgCounter[settings.base] || new Array();
+        this.toasterMsgCounter[settings.base][settings.position] = this.toasterMsgCounter[settings.base][settings.position] || new Array();
+        this.toasterMsgCounter[settings.base][settings.position].push( msgId );
 
-    this.toasterMsgCounter[settings.base][settings.position].push( msgId );
+        actualMsgCounter = this.toasterMsgCounter[settings.base][settings.position];
+    }
+
 
 
 	if( jQuery(settings.base+' > .ui-toaster-area-'+settings.position).length==0 )
@@ -101,12 +125,12 @@ jQuery.toaster = function(settings)
 		// add the timeout to the toast
 		if( settings.timeout>0 )
 		{
-            var beforeId = this.toasterMsgCounter[settings.base][settings.position].indexOf( msgId );
-            var before = this.toasterMsgCounter[settings.base][settings.position][ (beforeId-1) ];
+            var beforeId = settings.hideAlgo=='none'?null:actualMsgCounter.indexOf( msgId );
+            var before = settings.hideAlgo=='none'?null:actualMsgCounter[ (beforeId-1) ];
 
 			var timedCloseFunction = function()
 			{
-                if( before==undefined || $('#'+before).length==0 )
+                if( settings.hideAlgo=='none' || before==undefined || $('#'+before).length==0 )
 				{
 					closeFunction();
 				}
